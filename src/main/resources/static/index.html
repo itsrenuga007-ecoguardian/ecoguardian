@@ -1,0 +1,830 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco Guardian | Smart Waste Reporting</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        :root {
+            --dark-green: #004d32;
+            --green: #078b49;
+            --bright-green: #20c65a;
+            --light-green: #effbef;
+            --text-dark: #102132;
+            --text-muted: #40546a;
+            --white: #ffffff;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            background: var(--light-green);
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* NAVIGATION */
+
+        .navbar {
+            min-height: 92px;
+            padding: 12px 3.2%;
+            background: linear-gradient(110deg, #00432f, #003d2b);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            color: white;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .logo-icon {
+            font-size: 43px;
+            line-height: 1;
+        }
+
+        .logo-name {
+            font-size: 29px;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 17px 18px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: bold;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            background: var(--bright-green);
+            color: #003b27;
+        }
+
+        /* SIGN IN AND SIGN UP */
+
+        .auth-links {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            flex-shrink: 0;
+        }
+
+        .auth-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: bold;
+            text-decoration: none;
+            white-space: nowrap;
+            transition: background 0.2s;
+        }
+
+        .signin-link {
+            color: white;
+            border: 2px solid #a5d6a7;
+            background: transparent;
+        }
+
+        .signin-link:hover {
+            background: #078b49;
+        }
+
+        .signup-link {
+            color: #003b27;
+            background: #20c65a;
+            border: 2px solid #20c65a;
+        }
+
+        .signup-link:hover {
+            background: #a5f3b8;
+            border-color: #a5f3b8;
+        }
+
+        .profile-icon {
+            width: 48px;
+            height: 48px;
+            background: white;
+            color: #466174;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+            flex-shrink: 0;
+        }
+
+        /* MAIN CONTAINER */
+
+        .container {
+            width: 95%;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* HERO SECTION */
+
+        .hero {
+            margin-top: 40px;
+            padding: 35px;
+            min-height: 495px;
+            background: rgba(255, 255, 255, 0.76);
+            border-radius: 15px;
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            align-items: center;
+            gap: 20px;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            padding: 5px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tagline {
+            color: #078b49;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 6.2vw, 92px);
+            line-height: 1.04;
+            letter-spacing: -3px;
+            margin-bottom: 12px;
+            color: #092331;
+        }
+
+        .hero h1 span { color: #005b3c; }
+
+        .hero h2 {
+            font-size: clamp(20px, 2vw, 29px);
+            line-height: 1.35;
+            margin-bottom: 10px;
+            color: #293a4a;
+        }
+
+        .hero-description {
+            color: #35485b;
+            font-size: 18px;
+            line-height: 1.65;
+            max-width: 700px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 22px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            min-height: 65px;
+            padding: 16px 27px;
+            border: 2px solid var(--green);
+            border-radius: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 19px;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #078e4c;
+            color: white;
+        }
+
+        .btn-primary:hover { background: #006d39; }
+
+        .btn-secondary {
+            color: #00643a;
+            background: white;
+        }
+
+        .btn-secondary:hover { background: #e4f8e9; }
+
+        /* ENVIRONMENT ILLUSTRATION */
+
+        .hero-art {
+            min-height: 390px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+            isolation: isolate;
+            border-radius: 50% 50% 15px 15px;
+            background: linear-gradient(
+                to bottom,
+                #c6f0ff 0%,
+                #e6f9f8 57%,
+                #b8e9a2 58%,
+                #72bd53 100%
+            );
+        }
+
+        .city {
+            position: absolute;
+            inset: 45px 0 110px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 9px;
+            opacity: 0.55;
+            z-index: -1;
+        }
+
+        .building {
+            width: 12%;
+            background: #77c4dc;
+            border-radius: 4px 4px 0 0;
+            position: relative;
+        }
+
+        .building::before {
+            content: "";
+            position: absolute;
+            inset: 12px 7px 0;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0 15px,
+                #d5f6ff 15px 21px
+            );
+        }
+
+        .building:nth-child(1) { height: 42%; }
+        .building:nth-child(2) { height: 67%; }
+
+        .building:nth-child(3) {
+            height: 85%;
+            width: 15%;
+        }
+
+        .building:nth-child(4) { height: 55%; }
+        .building:nth-child(5) { height: 73%; }
+        .building:nth-child(6) { height: 46%; }
+
+        .cloud {
+            position: absolute;
+            top: 45px;
+            width: 90px;
+            height: 25px;
+            background: white;
+            border-radius: 40px;
+            opacity: 0.9;
+        }
+
+        .cloud::before,
+        .cloud::after {
+            content: "";
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .cloud::before {
+            width: 36px;
+            height: 36px;
+            top: -18px;
+            left: 16px;
+        }
+
+        .cloud::after {
+            width: 28px;
+            height: 28px;
+            top: -12px;
+            right: 15px;
+        }
+
+        .cloud-one { left: 13%; }
+
+        .cloud-two {
+            right: 8%;
+            top: 75px;
+        }
+
+        .tree {
+            position: absolute;
+            right: 2%;
+            bottom: 94px;
+            width: 100px;
+            height: 220px;
+        }
+
+        .tree-top {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100px;
+            height: 105px;
+            background: #399d36;
+            border-radius: 50%;
+            box-shadow:
+                -25px 22px 0 -5px #55b83b,
+                23px 18px 0 -6px #25892d,
+                0 -15px 0 -9px #5cbf3e;
+        }
+
+        .tree-trunk {
+            position: absolute;
+            width: 17px;
+            height: 115px;
+            background: #79502d;
+            left: 42px;
+            top: 85px;
+            border-radius: 8px;
+        }
+
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 22px;
+            background: #c9e79b;
+            border-radius: 50%;
+        }
+
+        .bins {
+            width: 79%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 10px;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 15px;
+        }
+
+        .bin {
+            flex: 1;
+            max-width: 155px;
+            height: 185px;
+            position: relative;
+            border-radius: 7px 7px 13px 13px;
+            color: white;
+            text-align: center;
+            padding-top: 45px;
+            box-shadow: inset -9px 0 0 rgba(0,0,0,0.10);
+        }
+
+        .bin::before {
+            content: "";
+            position: absolute;
+            top: -15px;
+            left: -7px;
+            right: -7px;
+            height: 24px;
+            background: inherit;
+            border-radius: 8px 8px 4px 4px;
+            border-bottom: 5px solid rgba(0,0,0,0.12);
+        }
+
+        .bin-green {
+            background: linear-gradient(90deg, #069345, #16b455);
+        }
+
+        .bin-blue {
+            background: linear-gradient(90deg, #0087da, #19a9ef);
+        }
+
+        .bin-yellow {
+            background: linear-gradient(90deg, #efa900, #ffc72b);
+        }
+
+        .recycle {
+            display: block;
+            font-size: 55px;
+            line-height: 1.25;
+            font-weight: bold;
+        }
+
+        .bin-label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .bin-wheel {
+            position: absolute;
+            bottom: -8px;
+            left: 15px;
+            width: 18px;
+            height: 18px;
+            background: #203a34;
+            border: 3px solid #a3b3a7;
+            border-radius: 50%;
+            box-shadow: 96px 0 0 -3px #203a34;
+        }
+
+        /* FEATURE CARDS */
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 22px;
+            margin: 27px 0 40px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 25px;
+            min-height: 225px;
+            border-radius: 15px;
+            border: 1px solid #e7efe8;
+            box-shadow: 0 3px 9px rgba(0, 60, 30, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 9px 22px rgba(0, 60, 30, 0.10);
+        }
+
+        .feature-icon {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: #d9f5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 43px;
+            margin-bottom: 14px;
+        }
+
+        .feature-card:nth-child(2) .feature-icon {
+            background: #d9edff;
+        }
+
+        .feature-card:nth-child(3) .feature-icon {
+            background: #fff0c9;
+        }
+
+        .feature-card h3 {
+            font-size: 23px;
+            margin-bottom: 7px;
+            color: #0e1b2a;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 17px;
+            line-height: 1.5;
+        }
+
+        /* FOOTER */
+
+        footer {
+            background: linear-gradient(110deg, #00442f, #003c2a);
+            color: white;
+            min-height: 78px;
+            padding: 22px 4%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover { text-decoration: underline; }
+
+        /* RESPONSIVE DESIGN */
+
+        @media (max-width: 1150px) {
+            .navbar {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links { flex-wrap: wrap; }
+
+            .nav-links a { padding: 12px; }
+
+            .hero {
+                grid-template-columns: 1fr 0.85fr;
+                padding: 25px;
+            }
+
+            .hero-art { min-height: 320px; }
+
+            .features { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 700px) {
+            .navbar {
+                padding: 15px;
+                gap: 12px;
+            }
+
+            .logo-name { font-size: 24px; }
+            .logo-icon { font-size: 34px; }
+
+            .auth-links {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .auth-links a {
+                padding: 10px 15px;
+                font-size: 13px;
+            }
+
+            .profile-icon { display: none; }
+
+            .nav-links {
+                width: 100%;
+                gap: 5px;
+            }
+
+            .nav-links a {
+                font-size: 12px;
+                padding: 10px;
+            }
+
+            .hero {
+                margin-top: 18px;
+                grid-template-columns: 1fr;
+                padding: 23px;
+            }
+
+            .hero h1 {
+                font-size: 49px;
+                letter-spacing: -2px;
+            }
+
+            .hero h2 { font-size: 21px; }
+
+            .hero-description { font-size: 16px; }
+
+            .tagline {
+                font-size: 14px;
+                margin-bottom: 18px;
+            }
+
+            .hero-art { min-height: 285px; }
+
+            .tree {
+                transform: scale(0.75);
+                transform-origin: bottom right;
+            }
+
+            .bin {
+                height: 140px;
+                padding-top: 33px;
+            }
+
+            .recycle { font-size: 40px; }
+            .bin-label { font-size: 11px; }
+
+            .features {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .feature-card { min-height: auto; }
+
+            .btn {
+                min-height: 54px;
+                font-size: 16px;
+                padding: 12px 17px;
+            }
+
+            footer { font-size: 13px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVIGATION -->
+
+    <header class="navbar">
+
+        <a href="index.html" class="logo">
+            <span class="logo-icon">🌿</span>
+            <span class="logo-name">Eco Guardian</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Main navigation">
+            <a href="index.html" class="active">⌂ Home</a>
+            <a href="report.html">▤ Report Waste</a>
+            <a href="admin.html">♟ Admin Dashboard</a>
+            <a href="worker.html">♟ Worker Dashboard</a>
+            <a href="rewards.html">🏆 Rewards</a>
+        </nav>
+
+        <!-- NEW SIGN IN / SIGN UP OPTIONS -->
+
+        <div class="auth-links" aria-label="Account options">
+            <a href="login.html" class="signin-link">Sign In</a>
+            <a href="register.html" class="signup-link">Sign Up</a>
+        </div>
+
+        <div class="profile-icon" title="Profile">
+            👤
+        </div>
+
+    </header>
+
+    <main class="container">
+
+        <!-- HERO SECTION -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="tagline">
+                    🌿 &nbsp; CLEAN TODAY
+                    &nbsp; | &nbsp;
+                    GREENER TOMORROW
+                </div>
+
+                <h1>Eco <span>Guardian</span></h1>
+
+                <h2>
+                    Smart Waste Reporting &amp;
+                    Environmental Awareness
+                </h2>
+
+                <p class="hero-description">
+                    A cleaner city starts with a responsible you.
+                    Report overflowing dustbins, help in quick cleaning,
+                    earn rewards and be a part of a greener tomorrow.
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a href="report.html" class="btn btn-primary">
+                        ▤ &nbsp; Report Waste
+                    </a>
+
+                    <a href="#features" class="btn btn-secondary">
+                        ▶ &nbsp; Learn More
+                    </a>
+
+                </div>
+
+            </div>
+
+            <!-- RECYCLING ILLUSTRATION -->
+
+            <div class="hero-art" aria-label="Recycling bins in a green city">
+
+                <div class="cloud cloud-one"></div>
+                <div class="cloud cloud-two"></div>
+
+                <div class="city">
+                    <div class="building"></div>
+                    <div class="building"></div>
+                    <div class="building"></div>
+                    <div class="building"></div>
+                    <div class="building"></div>
+                    <div class="building"></div>
+                </div>
+
+                <div class="tree">
+                    <div class="tree-top"></div>
+                    <div class="tree-trunk"></div>
+                </div>
+
+                <div class="ground"></div>
+
+                <div class="bins">
+
+                    <div class="bin bin-green">
+                        <span class="recycle">♻</span>
+                        <div class="bin-label">PLASTIC</div>
+                        <div class="bin-wheel"></div>
+                    </div>
+
+                    <div class="bin bin-blue">
+                        <span class="recycle">♻</span>
+                        <div class="bin-label">PAPER</div>
+                        <div class="bin-wheel"></div>
+                    </div>
+
+                    <div class="bin bin-yellow">
+                        <span class="recycle">♻</span>
+                        <div class="bin-label">OTHER</div>
+                        <div class="bin-wheel"></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- FEATURE CARDS -->
+
+        <section class="features" id="features">
+
+            <article class="feature-card">
+                <div class="feature-icon">📄</div>
+                <h3>Report</h3>
+                <p>
+                    Report overflowing dustbins with
+                    location and image.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>Clean City</h3>
+                <p>
+                    Help keep our environment
+                    clean and healthy.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">⭐</div>
+                <h3>Earn Rewards</h3>
+                <p>
+                    Get points for responsible
+                    reporting and actions.
+                </p>
+            </article>
+
+            <article class="feature-card">
+                <div class="feature-icon">🌿</div>
+                <h3>Better Tomorrow</h3>
+                <p>
+                    Together for a greener
+                    and cleaner future.
+                </p>
+            </article>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+
+    <footer>
+
+        <p>
+            © 2026 Eco Guardian |
+            Smart Waste Reporting &amp;
+            Environmental Awareness
+        </p>
+
+        <div class="footer-links">
+            <a href="#features">About</a>
+            <a href="report.html">Contact</a>
+            <a href="#features">Privacy</a>
+        </div>
+
+    </footer>
+
+</body>
+</html>

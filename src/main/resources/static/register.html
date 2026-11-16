@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Eco Guardian</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e8f5e9, #f5faf5);
+            color: #243b2b;
+        }
+
+        nav {
+            background: #174c32;
+            color: white;
+            padding: 16px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .home-link {
+            border: 1px solid #a5d6a7;
+            padding: 9px 15px;
+            border-radius: 8px;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 35px 18px;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 460px;
+            padding: 35px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 12px 35px rgba(23, 76, 50, 0.13);
+        }
+
+        .icon {
+            font-size: 38px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #174c32;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718075;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        label {
+            display: block;
+            margin: 15px 0 7px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d7e2d9;
+            border-radius: 8px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #27834f;
+            box-shadow: 0 0 0 3px rgba(39, 131, 79, 0.10);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 24px;
+            border: none;
+            border-radius: 8px;
+            background: #237a48;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #174c32;
+        }
+
+        .message {
+            display: none;
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .bottom-text {
+            margin-top: 22px;
+            text-align: center;
+            font-size: 14px;
+            color: #68766b;
+        }
+
+        .bottom-text a {
+            color: #237a48;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 18px;
+            color: #617466;
+            font-size: 13px;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 25px 20px;
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">🌿 Eco Guardian</a>
+        <a href="index.html" class="home-link">Back to Home</a>
+    </nav>
+
+    <main>
+        <section class="card">
+            <div class="icon">🌱</div>
+
+            <h1>Create Account</h1>
+            <p class="subtitle">Join Eco Guardian and help keep our environment clean.</p>
+
+            <form id="registerForm">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name"
+                       placeholder="Enter your full name"
+                       autocomplete="name" required>
+
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email"
+                       placeholder="Enter your email"
+                       autocomplete="email" required>
+
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone"
+                       placeholder="Enter your phone number"
+                       autocomplete="tel" required>
+
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password"
+                       placeholder="Create a password"
+                       autocomplete="new-password"
+                       minlength="8" required>
+
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword"
+                       name="confirmPassword"
+                       placeholder="Re-enter your password"
+                       autocomplete="new-password"
+                       minlength="8" required>
+
+                <button type="submit">Create Account</button>
+
+                <div id="message" class="message" role="status"></div>
+            </form>
+
+            <p class="bottom-text">
+                Already have an account?
+                <a href="login.html">Sign In</a>
+            </p>
+        </section>
+    </main>
+
+    <footer>
+        © 2026 Eco Guardian | Smart Environmental Monitoring System
+    </footer>
+
+  
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+    const message = document.getElementById("message");
+    const button = this.querySelector('button[type="submit"]');
+
+    message.textContent = "";
+
+    if (password !== confirmPassword) {
+        message.textContent = "Passwords do not match.";
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Creating account...";
+
+    try {
+        const response = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name,
+                email,
+                password,
+                confirmPassword
+            })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            message.style.color = "#087443";
+            message.textContent = result.message;
+            this.reset();
+
+            setTimeout(() => {
+                window.location.href = "login.html";
+            }, 1200);
+        } else {
+            message.style.color = "#b42318";
+            message.textContent = result.message || "Registration failed.";
+        }
+    } catch (error) {
+        message.style.color = "#b42318";
+        message.textContent =
+            "Unable to connect to the server. Check that Eco Guardian is running.";
+    } finally {
+        button.disabled = false;
+        button.textContent = "Create Account";
+    }
+});
+</script>
+
+
+</body>
+</html>

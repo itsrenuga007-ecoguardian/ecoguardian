@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | Eco Guardian</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+:root{--dark:#00452f;--green:#078b49;--bright:#20c65a;--text:#142333;--muted:#627182;--background:#f3f8f2}
+body{background:var(--background);color:var(--text)}
+
+/* NAVIGATION BAR */
+.navbar{min-height:88px;padding:12px 3.2%;background:linear-gradient(110deg,#00452f,#003b2a);color:white;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.logo{display:flex;align-items:center;gap:10px;color:white;text-decoration:none;white-space:nowrap}
+.logo-icon{font-size:39px}
+.logo-name{font-size:27px;font-weight:bold}
+.nav-links{display:flex;align-items:center;justify-content:center;gap:5px}
+.nav-links a{color:white;text-decoration:none;padding:15px 13px;border-radius:14px;font-size:14px;font-weight:bold;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{background:var(--bright);color:#003c28}
+.profile{width:46px;height:46px;border-radius:50%;background:white;display:flex;justify-content:center;align-items:center;font-size:26px;flex-shrink:0}
+
+/* MAIN CONTAINER */
+.container{width:94%;max-width:1450px;margin:32px auto}
+
+/* PAGE HEADING */
+.page-heading{display:flex;align-items:center;gap:23px;margin:0 25px 35px}
+.heading-icon{width:95px;height:95px;flex-shrink:0;border-radius:50%;background:linear-gradient(135deg,#087b40,#00a65b);display:flex;align-items:center;justify-content:center;color:white;font-size:48px}
+.page-heading h1{font-size:clamp(32px,3.5vw,48px);margin-bottom:9px;color:#080d14}
+.page-heading p{color:#46576a;font-size:19px;line-height:1.5}
+
+/* SUMMARY CARDS */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;margin-bottom:30px}
+.stat-card{background:white;border:1px solid #edf0ed;border-radius:15px;padding:25px 20px;min-height:155px;display:flex;align-items:center;gap:17px;box-shadow:0 4px 15px rgba(0,40,20,.06)}
+.stat-icon{width:67px;height:67px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:34px;flex-shrink:0}
+.blue{background:#1680ed}.orange{background:#ff9e16}.teal{background:#0caf72}.green{background:#078e4b}
+.stat-label{color:#526174;font-size:15px;margin-bottom:8px}
+.stat-number{color:#111c2a;font-size:39px;font-weight:bold}
+
+/* REPORT TABLE PANEL */
+.reports-panel{background:white;border:1px solid #e9eeeb;border-radius:17px;padding:25px;box-shadow:0 4px 16px rgba(0,40,20,.06)}
+.panel-heading{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:22px}
+.panel-heading h2{font-size:27px;color:#101b28}
+.panel-title-icon{color:#078b49;margin-right:8px}
+.search-box{width:310px;max-width:100%;min-height:51px;padding:12px 15px;border:2px solid #e1e7eb;border-radius:10px;font-size:16px;outline:none}
+.search-box:focus{border-color:#078b49}
+.table-wrapper{width:100%;overflow-x:auto;border:1px solid #e5e9eb;border-radius:10px}
+table{width:100%;min-width:1050px;border-collapse:collapse;text-align:left}
+thead{background:#f0f4f5}
+th{padding:19px 15px;color:#26384b;font-size:15px;white-space:nowrap;border-bottom:1px solid #dfe6e8}
+td{padding:15px;border-bottom:1px solid #e9edef;color:#35485b;font-size:14px;vertical-align:middle}
+tbody tr:hover{background:#f8fbf8}
+tbody tr:last-child td{border-bottom:none}
+.id-cell{font-weight:bold}
+.status-badge{display:inline-block;padding:8px 11px;border-radius:8px;font-weight:bold;white-space:nowrap}
+.waste-status{background:#ffe0dc;color:#c9342b}
+.pending{background:#fff0d4;color:#bd6900}
+.in-progress{background:#dcecff;color:#1766c1}
+.completed{background:#d5f4df;color:#087b40}
+.not-assigned{color:#7b8793;font-style:italic}
+.worker-select{min-width:120px;max-width:145px;padding:9px;border:1px solid #d6e0e3;border-radius:7px;background:white;font-size:13px}
+.action-btn{border:none;border-radius:7px;padding:10px 17px;background:#1680ed;color:white;font-weight:bold;cursor:pointer;white-space:nowrap}
+.action-btn:hover{filter:brightness(.92)}
+.action-btn:disabled{opacity:.6;cursor:wait}
+.view-btn{background:#078e4b}
+.table-message{text-align:center;padding:35px;color:#6a7885;line-height:1.6}
+.error-text{color:#b42318}
+
+/* FOOTER */
+footer{background:var(--dark);color:white;padding:24px 4%;margin-top:35px;display:flex;justify-content:center;align-items:center;gap:22px;flex-wrap:wrap;text-align:center}
+.footer-links{display:flex;gap:18px}
+.footer-links a{color:white;text-decoration:none}
+
+/* CUSTOM POPUP */
+.eg-popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9999;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease}
+.eg-popup-overlay.show{opacity:1;visibility:visible}
+.eg-popup{background:#fff;width:100%;max-width:390px;padding:32px 25px 26px;border-radius:20px;text-align:center;box-shadow:0 15px 50px rgba(0,0,0,.22);transform:translateY(20px) scale(.95);transition:transform .25s ease}
+.eg-popup-overlay.show .eg-popup{transform:translateY(0) scale(1)}
+.eg-popup-icon{width:76px;height:76px;margin:0 auto 18px;border-radius:50%;background:#e5f8eb;color:#168a3c;display:flex;align-items:center;justify-content:center;font-size:42px;font-weight:bold;border:3px solid #bcebc9}
+.eg-popup.error .eg-popup-icon{background:#fff0f0;color:#d93636;border-color:#ffd0d0}
+.eg-popup.warning .eg-popup-icon{background:#fff7df;color:#b77900;border-color:#ffe5a3}
+.eg-popup h2{color:#183b29;font-size:23px;margin-bottom:12px}
+.eg-popup p{color:#666;font-size:15px;line-height:1.6;margin-bottom:24px;overflow-wrap:anywhere;white-space:pre-line}
+.eg-popup button{width:100%;padding:13px 18px;border-radius:10px;font-size:15px;background:#168a3c;color:white;border:none;font-weight:bold;cursor:pointer;transition:background .2s ease}
+.eg-popup button:hover{background:#087d32}
+.eg-popup.error button{background:#d93636}
+.eg-popup.error button:hover{background:#b92323}
+
+@media(max-width:1150px){
+.navbar{flex-wrap:wrap;justify-content:center}
+.nav-links{flex-wrap:wrap}
+.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:650px){
+.navbar{padding:15px 10px}
+.logo-name{font-size:22px}
+.nav-links{width:100%;gap:3px}
+.nav-links a{padding:9px 7px;font-size:11px}
+.profile{display:none}
+.container{width:94%;margin-top:23px}
+.page-heading{margin:0 0 24px;gap:13px;align-items:flex-start}
+.heading-icon{width:60px;height:60px;font-size:30px}
+.page-heading h1{font-size:30px}
+.page-heading p{font-size:15px}
+.stats{grid-template-columns:1fr;gap:14px}
+.stat-card{min-height:120px}
+.reports-panel{padding:16px}
+.panel-heading h2{font-size:23px}
+.search-box{width:100%}
+footer{font-size:13px}
+.eg-popup{max-width:340px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- SHARED ECO GUARDIAN NAVIGATION -->
+<header class="navbar">
+    <a href="index.html" class="logo">
+        <span class="logo-icon">🌿</span>
+        <span class="logo-name">Eco Guardian</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">⌂ Home</a>
+        <a href="report.html">▤ Report Waste</a>
+        <a href="admin.html" class="active">♟ Admin Dashboard</a>
+        <a href="worker.html">♟ Worker Dashboard</a>
+        <a href="rewards.html">🏆 Rewards</a>
+    </nav>
+
+    <div class="profile" title="Profile">👤</div>
+</header>
+
+<main class="container">
+
+    <section class="page-heading">
+        <div class="heading-icon">🛡</div>
+        <div>
+            <h1>Admin Dashboard</h1>
+            <p>Manage reports, assign workers and monitor activities.</p>
+        </div>
+    </section>
+
+    <!-- SUMMARY STATISTICS -->
+    <section class="stats">
+        <div class="stat-card">
+            <div class="stat-icon blue">▤</div>
+            <div>
+                <div class="stat-label">Total Reports</div>
+                <div class="stat-number" id="totalReports">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon orange">◷</div>
+            <div>
+                <div class="stat-label">Pending</div>
+                <div class="stat-number" id="pendingReports">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon teal">⚙</div>
+            <div>
+                <div class="stat-label">In Progress</div>
+                <div class="stat-number" id="progressReports">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon green">✓</div>
+            <div>
+                <div class="stat-label">Completed</div>
+                <div class="stat-number" id="completedReports">0</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ALL REPORTS -->
+    <section class="reports-panel">
+        <div class="panel-heading">
+            <h2><span class="panel-title-icon">▣</span>All Reports</h2>
+            <input type="search" id="searchReports" class="search-box"
+                   placeholder="⌕  Search reports..." aria-label="Search reports">
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Description</th>
+                        <th>Image</th>
+                        <th>Assigned Worker</th>
+                        <th>Task Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="reportTableBody">
+                    <tr>
+                        <td colspan="8" class="table-message">Loading reports...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>© 2026 Eco Guardian | Smart Waste Reporting &amp; Environmental Awareness</p>
+    <div class="footer-links">
+        <a href="index.html#features">About</a>
+        <a href="report.html">Contact</a>
+        <a href="index.html">Home</a>
+    </div>
+</footer>
+
+<!-- CUSTOM POPUP -->
+<div id="egPopupOverlay" class="eg-popup-overlay" aria-hidden="true">
+    <div id="egPopup" class="eg-popup" role="dialog" aria-modal="true"
+         aria-labelledby="egPopupTitle" aria-describedby="egPopupMessage">
+        <div id="egPopupIcon" class="eg-popup-icon">✓</div>
+        <h2 id="egPopupTitle">Success!</h2>
+        <p id="egPopupMessage">Your action was completed successfully.</p>
+        <button type="button" id="egPopupButton">Continue</button>
+    </div>
+</div>
+
+<script>
+/* CUSTOM POPUP FUNCTIONS */
+let egPopupTimer = null;
+let lastPopupFocus = null;
+
+function showPopup(title, message, type = "success") {
+    const overlay = document.getElementById("egPopupOverlay");
+    const popup = document.getElementById("egPopup");
+    const icon = document.getElementById("egPopupIcon");
+
+    clearTimeout(egPopupTimer);
+    lastPopupFocus = document.activeElement;
+
+    popup.classList.remove("success", "error", "warning");
+    popup.classList.add(type);
+
+    if (type === "error") {
+        icon.textContent = "×";
+    } else if (type === "warning") {
+        icon.textContent = "!";
+    } else {
+        icon.textContent = "✓";
+    }
+
+    document.getElementById("egPopupTitle").textContent = title;
+    document.getElementById("egPopupMessage").textContent = message;
+
+    overlay.classList.add("show");
+    overlay.setAttribute("aria-hidden", "false");
+    document.getElementById("egPopupButton").focus();
+
+    egPopupTimer = setTimeout(closeEgPopup, 5000);
+}
+
+function closeEgPopup() {
+    const overlay = document.getElementById("egPopupOverlay");
+
+    clearTimeout(egPopupTimer);
+    overlay.classList.remove("show");
+    overlay.setAttribute("aria-hidden", "true");
+
+    if (lastPopupFocus && typeof lastPopupFocus.focus === "function") {
+        lastPopupFocus.focus();
+    }
+}
+
+document.getElementById("egPopupButton")
+    .addEventListener("click", closeEgPopup);
+
+document.getElementById("egPopupOverlay")
+    .addEventListener("click", function(event) {
+        if (event.target === this) closeEgPopup();
+    });
+
+document.addEventListener("keydown", function(event) {
+    if (
+        event.key === "Escape" &&
+        document.getElementById("egPopupOverlay").classList.contains("show")
+    ) {
+        closeEgPopup();
+    }
+});
+
+/* REPORT DATA */
+const tableBody = document.getElementById("reportTableBody");
+const searchInput = document.getElementById("searchReports");
+let allReports = [];
+const workers = ["Worker 1", "Worker 2", "Worker 3"];
+
+/* LOAD REPORTS FROM SPRING BOOT */
+async function loadReports() {
+    tableBody.innerHTML = `
+        <tr><td colspan="8" class="table-message">Loading reports...</td></tr>
+    `;
+
+    try {
+        const response = await fetch("/api/reports");
+
+        if (!response.ok) {
+            throw new Error("Could not retrieve reports.");
+        }
+
+        const reports = await response.json();
+        allReports = Array.isArray(reports) ? reports : [];
+
+        updateStatistics();
+        renderReports();
+
+    } catch (error) {
+        console.error("Error loading reports:", error);
+
+        tableBody.innerHTML = `
+            <tr>
+                <td colspan="8" class="table-message error-text">
+                    Unable to load reports. Check the Spring Boot server
+                    and database connection, then refresh this page.
+                </td>
+            </tr>
+        `;
+
+        showPopup(
+            "Unable to Load Reports",
+            "Check that your Spring Boot server and database are running.",
+            "error"
+        );
+    }
+}
+
+/* NORMALIZE TASK STATUS */
+function getTaskStatus(report) {
+    const value = (report.taskStatus || "Pending").trim().toLowerCase();
+
+    if (value === "completed") return "Completed";
+
+    if (
+        value === "assigned" ||
+        value === "in progress" ||
+        value === "in-progress"
+    ) {
+        return "In Progress";
+    }
+
+    return "Pending";
+}
+
+/* UPDATE SUMMARY CARDS */
+function updateStatistics() {
+    let pending = 0;
+    let inProgress = 0;
+    let completed = 0;
+
+    allReports.forEach(report => {
+        const status = getTaskStatus(report);
+
+        if (status === "Pending") pending++;
+        else if (status === "In Progress") inProgress++;
+        else if (status === "Completed") completed++;
+    });
+
+    document.getElementById("totalReports").textContent = allReports.length;
+    document.getElementById("pendingReports").textContent = pending;
+    document.getElementById("progressReports").textContent = inProgress;
+    document.getElementById("completedReports").textContent = completed;
+}
+
+/* CREATE SAFE TEXT CELLS */
+function createCell(value, className) {
+    const cell = document.createElement("td");
+    cell.textContent = value ?? "—";
+
+    if (className) cell.className = className;
+
+    return cell;
+}
+
+/* RENDER TABLE */
+function renderReports() {
+    const query = searchInput.value.trim().toLowerCase();
+
+    const filteredReports = allReports.filter(report => {
+        const searchable = [
+            report.id,
+            report.location,
+            report.status,
+            report.description,
+            report.assignedWorker,
+            report.taskStatus
+        ].join(" ").toLowerCase();
+
+        return searchable.includes(query);
+    });
+
+    tableBody.replaceChildren();
+
+    if (filteredReports.length === 0) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+
+        cell.colSpan = 8;
+        cell.className = "table-message";
+        cell.textContent = allReports.length === 0
+            ? "No reports have been submitted yet."
+            : "No reports match your search.";
+
+        row.appendChild(cell);
+        tableBody.appendChild(row);
+        return;
+    }
+
+    filteredReports.forEach(report => {
+        const row = document.createElement("tr");
+        const taskStatus = getTaskStatus(report);
+
+        row.appendChild(createCell(report.id, "id-cell"));
+        row.appendChild(createCell(report.location || "—"));
+
+        const wasteCell = document.createElement("td");
+        const wasteBadge = document.createElement("span");
+        wasteBadge.className = "status-badge waste-status";
+        wasteBadge.textContent = report.status || "Unknown";
+        wasteCell.appendChild(wasteBadge);
+        row.appendChild(wasteCell);
+
+        row.appendChild(createCell(report.description || "—"));
+
+        // The current Report entity does not store an image.
+        const imageCell = document.createElement("td");
+        const imageLabel = document.createElement("span");
+        imageLabel.className = "not-assigned";
+        imageLabel.textContent = "Not uploaded";
+        imageCell.appendChild(imageLabel);
+        row.appendChild(imageCell);
+
+        row.appendChild(createCell(report.assignedWorker || "Not assigned"));
+
+        const taskCell = document.createElement("td");
+        const taskBadge = document.createElement("span");
+        taskBadge.className = "status-badge";
+
+        if (taskStatus === "Completed") {
+            taskBadge.classList.add("completed");
+        } else if (taskStatus === "In Progress") {
+            taskBadge.classList.add("in-progress");
+        } else {
+            taskBadge.classList.add("pending");
+        }
+
+        taskBadge.textContent = taskStatus;
+        taskCell.appendChild(taskBadge);
+        row.appendChild(taskCell);
+
+        const actionCell = document.createElement("td");
+
+        if (taskStatus === "Completed") {
+            const viewButton = document.createElement("button");
+            viewButton.type = "button";
+            viewButton.className = "action-btn view-btn";
+            viewButton.textContent = "View";
+
+            viewButton.addEventListener("click", () => {
+                showPopup(
+                    "Report Details",
+                    "Report ID: " + report.id +
+                    "\nLocation: " + (report.location || "—") +
+                    "\nWaste Status: " + (report.status || "—") +
+                    "\nDescription: " + (report.description || "—") +
+                    "\nWorker: " + (report.assignedWorker || "—") +
+                    "\nTask Status: " + taskStatus,
+                    "success"
+                );
+            });
+
+            actionCell.appendChild(viewButton);
+
+        } else {
+            const controls = document.createElement("div");
+            controls.style.display = "flex";
+            controls.style.flexDirection = "column";
+            controls.style.gap = "7px";
+
+            const select = document.createElement("select");
+            select.className = "worker-select";
+            select.setAttribute("aria-label", "Select worker");
+
+            const placeholder = document.createElement("option");
+            placeholder.value = "";
+            placeholder.textContent = "Select Worker";
+            select.appendChild(placeholder);
+
+            workers.forEach(worker => {
+                const option = document.createElement("option");
+                option.value = worker;
+                option.textContent = worker;
+
+                if (report.assignedWorker === worker) {
+                    option.selected = true;
+                }
+
+                select.appendChild(option);
+            });
+
+            const assignButton = document.createElement("button");
+            assignButton.type = "button";
+            assignButton.className = "action-btn";
+            assignButton.textContent = "Assign";
+
+            assignButton.addEventListener("click", async () => {
+                const selectedWorker = select.value;
+
+                if (!selectedWorker) {
+                    showPopup(
+                        "Select a Worker",
+                        "Please select a worker before assigning this report.",
+                        "warning"
+                    );
+                    select.focus();
+                    return;
+                }
+
+                await assignWorker(report.id, selectedWorker, assignButton);
+            });
+
+            controls.appendChild(select);
+            controls.appendChild(assignButton);
+            actionCell.appendChild(controls);
+        }
+
+        row.appendChild(actionCell);
+        tableBody.appendChild(row);
+    });
+}
+
+/* ASSIGN A WORKER */
+async function assignWorker(reportId, worker, button) {
+    const originalText = button.textContent;
+
+    button.disabled = true;
+    button.textContent = "Assigning...";
+
+    try {
+        const url =
+            `/api/reports/${encodeURIComponent(reportId)}/assign` +
+            `?worker=${encodeURIComponent(worker)}`;
+
+        const response = await fetch(url, { method: "PUT" });
+
+        if (!response.ok) {
+            throw new Error("Failed to assign worker.");
+        }
+
+        // The backend may return an empty response body.
+        const responseText = await response.text();
+
+        if (responseText.trim()) {
+            try {
+                const updatedReport = JSON.parse(responseText);
+                const index = allReports.findIndex(
+                    report => String(report.id) === String(reportId)
+                );
+
+                if (index !== -1) allReports[index] = updatedReport;
+            } catch (parseError) {
+                console.warn("Assignment response was not JSON.");
+            }
+        }
+
+        await loadReports();
+
+        showPopup(
+            "Worker Assigned Successfully!",
+            worker + " has been assigned to report #" + reportId + ".",
+            "success"
+        );
+
+    } catch (error) {
+        console.error("Worker assignment error:", error);
+
+        showPopup(
+            "Assignment Failed",
+            "Failed to assign the worker. Check the server and try again.",
+            "error"
+        );
+
+        button.disabled = false;
+        button.textContent = originalText;
+    }
+}
+
+/* SEARCH REPORTS */
+searchInput.addEventListener("input", renderReports);
+
+/* INITIALIZE */
+loadReports();
+</script>
+
+</body>
+</html>

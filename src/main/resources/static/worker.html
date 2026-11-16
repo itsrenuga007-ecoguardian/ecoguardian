@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worker Dashboard | Eco Guardian</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+    --dark: #00452f;
+    --green: #078b49;
+    --bright: #20c65a;
+    --text: #142333;
+    --muted: #627182;
+    --background: #f3f8f2;
+}
+
+body {
+    background: var(--background);
+    color: var(--text);
+}
+
+.navbar {
+    min-height: 88px;
+    padding: 12px 3.2%;
+    background: linear-gradient(110deg, #00452f, #003b2a);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.logo-icon { font-size: 39px; }
+
+.logo-name {
+    font-size: 27px;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    padding: 15px 13px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    background: var(--bright);
+    color: #003c28;
+}
+
+.profile {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.container {
+    width: 94%;
+    max-width: 1450px;
+    margin: 32px auto;
+}
+
+.page-heading {
+    display: flex;
+    align-items: center;
+    gap: 23px;
+    margin: 0 25px 35px;
+}
+
+.heading-icon {
+    width: 95px;
+    height: 95px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #087b40, #00a65b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 47px;
+    flex-shrink: 0;
+}
+
+.page-heading h1 {
+    font-size: clamp(32px, 3.5vw, 48px);
+    margin-bottom: 9px;
+    color: #080d14;
+}
+
+.page-heading p {
+    color: #46576a;
+    font-size: 19px;
+    line-height: 1.5;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: white;
+    border: 1px solid #edf0ed;
+    border-radius: 15px;
+    padding: 25px 20px;
+    min-height: 155px;
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    box-shadow: 0 4px 15px rgba(0, 40, 20, 0.06);
+}
+
+.stat-icon {
+    width: 67px;
+    height: 67px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 34px;
+    flex-shrink: 0;
+}
+
+.blue { background: #1680ed; }
+.orange { background: #ff9e16; }
+.teal { background: #0caf72; }
+.green { background: #078e4b; }
+
+.stat-label {
+    color: #526174;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+
+.stat-number {
+    color: #111c2a;
+    font-size: 39px;
+    font-weight: bold;
+}
+
+.tasks-panel {
+    background: white;
+    border: 1px solid #e9eeeb;
+    border-radius: 17px;
+    padding: 25px;
+    box-shadow: 0 4px 16px rgba(0, 40, 20, 0.06);
+}
+
+.panel-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.panel-heading h2 {
+    font-size: 27px;
+    color: #101b28;
+}
+
+.panel-icon {
+    color: #078b49;
+    margin-right: 8px;
+}
+
+.search-box {
+    width: 310px;
+    max-width: 100%;
+    min-height: 51px;
+    padding: 12px 15px;
+    border: 2px solid #e1e7eb;
+    border-radius: 10px;
+    font-size: 16px;
+    outline: none;
+}
+
+.search-box:focus { border-color: #078b49; }
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e5e9eb;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+thead { background: #f0f4f5; }
+
+th {
+    padding: 19px 15px;
+    color: #26384b;
+    font-size: 15px;
+    white-space: nowrap;
+    border-bottom: 1px solid #dfe6e8;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #e9edef;
+    color: #35485b;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+tbody tr:hover { background: #f8fbf8; }
+tbody tr:last-child td { border-bottom: none; }
+.id-cell { font-weight: bold; }
+
+.status-badge {
+    display: inline-block;
+    padding: 9px 12px;
+    border-radius: 9px;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.pending {
+    background: #fff0d4;
+    color: #bd6900;
+}
+
+.in-progress {
+    background: #dcecff;
+    color: #1766c1;
+}
+
+.completed {
+    background: #d5f4df;
+    color: #087b40;
+}
+
+.action-btn {
+    border: none;
+    border-radius: 7px;
+    padding: 11px 16px;
+    background: #1680ed;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.action-btn:hover { filter: brightness(0.92); }
+
+.action-btn:disabled {
+    opacity: 0.6;
+    cursor: wait;
+}
+
+.complete-btn,
+.view-btn {
+    background: #078e4b;
+}
+
+.table-message {
+    text-align: center;
+    padding: 35px;
+    color: #6a7885;
+    line-height: 1.6;
+}
+
+.error-text { color: #b42318; }
+
+footer {
+    background: var(--dark);
+    color: white;
+    padding: 24px 4%;
+    margin-top: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+    text-align: center;
+}
+
+.footer-links {
+    display: flex;
+    gap: 18px;
+}
+
+.footer-links a {
+    color: white;
+    text-decoration: none;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1150px) {
+    .navbar {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .nav-links { flex-wrap: wrap; }
+
+    .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .navbar { padding: 15px 10px; }
+    .logo-name { font-size: 22px; }
+
+    .nav-links {
+        width: 100%;
+        gap: 3px;
+    }
+
+    .nav-links a {
+        padding: 9px 7px;
+        font-size: 11px;
+    }
+
+    .profile { display: none; }
+
+    .container {
+        width: 94%;
+        margin-top: 23px;
+    }
+
+    .page-heading {
+        margin: 0 0 24px;
+        gap: 13px;
+        align-items: flex-start;
+    }
+
+    .heading-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 30px;
+    }
+
+    .page-heading h1 { font-size: 30px; }
+    .page-heading p { font-size: 15px; }
+
+    .stats {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .stat-card { min-height: 120px; }
+    .tasks-panel { padding: 16px; }
+    .panel-heading h2 { font-size: 23px; }
+    .search-box { width: 100%; }
+    footer { font-size: 13px; }
+}
+
+/* CUSTOM POPUP */
+
+.eg-popup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(5, 24, 17, 0.58);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .22s ease, visibility .22s ease;
+}
+
+.eg-popup-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.eg-popup {
+    width: 100%;
+    max-width: 420px;
+    padding: 30px 26px 26px;
+    border-radius: 18px;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 18px 55px rgba(0, 0, 0, .24);
+    transform: translateY(12px) scale(.97);
+    transition: transform .22s ease;
+}
+
+.eg-popup-overlay.show .eg-popup {
+    transform: translateY(0) scale(1);
+}
+
+.eg-popup-icon {
+    width: 66px;
+    height: 66px;
+    margin: 0 auto 17px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #d5f4df;
+    color: #087b40;
+    font-size: 34px;
+    font-weight: bold;
+}
+
+.eg-popup.error .eg-popup-icon {
+    background: #fee2e2;
+    color: #b42318;
+}
+
+.eg-popup.warning .eg-popup-icon {
+    background: #fff0d4;
+    color: #bd6900;
+}
+
+.eg-popup h2 {
+    margin: 0 0 10px;
+    color: #142333;
+    font-size: 24px;
+}
+
+.eg-popup p {
+    margin: 0 0 23px;
+    color: #627182;
+    font-size: 15px;
+    line-height: 1.6;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.eg-popup button {
+    min-width: 125px;
+    border: 0;
+    border-radius: 9px;
+    padding: 12px 22px;
+    background: #078b49;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.eg-popup.error button { background: #b42318; }
+.eg-popup.warning button { background: #bd6900; }
+.eg-popup button:hover { filter: brightness(.94); }
+
+@media (prefers-reduced-motion: reduce) {
+    .eg-popup-overlay, .eg-popup { transition: none; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- CUSTOM POPUP HTML -->
+<div id="egPopupOverlay" class="eg-popup-overlay" aria-hidden="true">
+    <div id="egPopup" class="eg-popup" role="dialog" aria-modal="true"
+         aria-labelledby="egPopupTitle" aria-describedby="egPopupMessage">
+        <div id="egPopupIcon" class="eg-popup-icon">✓</div>
+        <h2 id="egPopupTitle">Success!</h2>
+        <p id="egPopupMessage">Your action was completed successfully.</p>
+        <button type="button" id="egPopupButton">Continue</button>
+    </div>
+</div>
+
+<header class="navbar">
+    <a href="index.html" class="logo">
+        <span class="logo-icon">🌿</span>
+        <span class="logo-name">Eco Guardian</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Main navigation">
+        <a href="index.html">⌂ Home</a>
+        <a href="report.html">▤ Report Waste</a>
+        <a href="admin.html">♟ Admin Dashboard</a>
+        <a href="worker.html" class="active">♟ Worker Dashboard</a>
+        <a href="rewards.html">🏆 Rewards</a>
+    </nav>
+
+    <div class="profile" title="Profile">👤</div>
+</header>
+
+<main class="container">
+
+    <section class="page-heading">
+        <div class="heading-icon">👷</div>
+        <div>
+            <h1>Worker Dashboard</h1>
+            <p>View your assigned tasks and mark them as completed.</p>
+        </div>
+    </section>
+
+    <section class="stats">
+        <div class="stat-card">
+            <div class="stat-icon blue">▤</div>
+            <div>
+                <div class="stat-label">Assigned Tasks</div>
+                <div class="stat-number" id="assignedCount">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon orange">◷</div>
+            <div>
+                <div class="stat-label">Pending</div>
+                <div class="stat-number" id="pendingCount">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon teal">⚙</div>
+            <div>
+                <div class="stat-label">In Progress</div>
+                <div class="stat-number" id="progressCount">0</div>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon green">✓</div>
+            <div>
+                <div class="stat-label">Completed</div>
+                <div class="stat-number" id="completedCount">0</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="tasks-panel">
+        <div class="panel-heading">
+            <h2>
+                <span class="panel-icon">♟</span>
+                My Assigned Tasks
+            </h2>
+
+            <input
+                type="search"
+                id="searchTasks"
+                class="search-box"
+                placeholder="⌕  Search tasks..."
+                aria-label="Search tasks"
+            >
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Location</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Assigned Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody id="taskTableBody">
+                    <tr>
+                        <td colspan="6" class="table-message">
+                            Loading assigned tasks...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <p>
+        © 2026 Eco Guardian |
+        Smart Waste Reporting &amp; Environmental Awareness
+    </p>
+
+    <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="report.html">Report Waste</a>
+        <a href="rewards.html">Rewards</a>
+    </div>
+</footer>
+
+<script>
+/* CUSTOM POPUP LOGIC */
+
+const egPopupOverlay = document.getElementById("egPopupOverlay");
+const egPopup = document.getElementById("egPopup");
+const egPopupIcon = document.getElementById("egPopupIcon");
+const egPopupTitle = document.getElementById("egPopupTitle");
+const egPopupMessage = document.getElementById("egPopupMessage");
+const egPopupButton = document.getElementById("egPopupButton");
+
+let egPopupTimer;
+
+function showPopup(title, message, type = "success") {
+    clearTimeout(egPopupTimer);
+
+    egPopup.classList.remove("error", "warning");
+
+    if (type === "error" || type === "warning") {
+        egPopup.classList.add(type);
+    }
+
+    egPopupIcon.textContent =
+        type === "error" ? "✕" :
+        type === "warning" ? "!" : "✓";
+
+    egPopupTitle.textContent = title;
+    egPopupMessage.textContent = message;
+
+    egPopupOverlay.classList.add("show");
+    egPopupOverlay.setAttribute("aria-hidden", "false");
+
+    egPopupButton.focus();
+    egPopupTimer = setTimeout(closeEgPopup, 5000);
+}
+
+function closeEgPopup() {
+    clearTimeout(egPopupTimer);
+    egPopupOverlay.classList.remove("show");
+    egPopupOverlay.setAttribute("aria-hidden", "true");
+}
+
+egPopupButton.addEventListener("click", closeEgPopup);
+
+egPopupOverlay.addEventListener("click", event => {
+    if (event.target === egPopupOverlay) {
+        closeEgPopup();
+    }
+});
+
+document.addEventListener("keydown", event => {
+    if (
+        event.key === "Escape" &&
+        egPopupOverlay.classList.contains("show")
+    ) {
+        closeEgPopup();
+    }
+});
+
+/*
+ * DEMO WORKER IDENTITY
+ * This dashboard currently displays tasks assigned to Worker 2.
+ */
+const CURRENT_WORKER = "Worker 2";
+
+const taskTableBody = document.getElementById("taskTableBody");
+const searchInput = document.getElementById("searchTasks");
+
+let assignedTasks = [];
+
+/* NORMALIZE TASK STATUS */
+
+function getTaskStatus(report) {
+    const value = (report.taskStatus || "Pending")
+        .trim()
+        .toLowerCase();
+
+    if (value === "completed") {
+        return "Completed";
+    }
+
+    if (value === "in progress" || value === "in-progress") {
+        return "In Progress";
+    }
+
+    return "Pending";
+}
+
+/* UPDATE SUMMARY CARDS */
+
+function updateStatistics() {
+    let pending = 0;
+    let inProgress = 0;
+    let completed = 0;
+
+    assignedTasks.forEach(report => {
+        const status = getTaskStatus(report);
+
+        if (status === "Pending") pending++;
+        if (status === "In Progress") inProgress++;
+        if (status === "Completed") completed++;
+    });
+
+    document.getElementById("assignedCount").textContent =
+        assignedTasks.length;
+
+    document.getElementById("pendingCount").textContent = pending;
+    document.getElementById("progressCount").textContent = inProgress;
+    document.getElementById("completedCount").textContent = completed;
+}
+
+/* LOAD TASKS ASSIGNED TO THIS WORKER */
+
+async function loadTasks() {
+    taskTableBody.innerHTML = `
+        <tr>
+            <td colspan="6" class="table-message">
+                Loading assigned tasks...
+            </td>
+        </tr>
+    `;
+
+    try {
+        const response = await fetch("/api/reports");
+
+        if (!response.ok) {
+            throw new Error("Failed to load reports.");
+        }
+
+        const reports = await response.json();
+
+        assignedTasks = reports.filter(report =>
+            (report.assignedWorker || "").trim().toLowerCase() ===
+            CURRENT_WORKER.toLowerCase()
+        );
+
+        updateStatistics();
+        renderTasks();
+
+    } catch (error) {
+        console.error("Error loading worker tasks:", error);
+
+        taskTableBody.innerHTML = `
+            <tr>
+                <td colspan="6" class="table-message error-text">
+                    Failed to load tasks. Check that Spring Boot is
+                    running and the /api/reports endpoint is available.
+                </td>
+            </tr>
+        `;
+
+        showPopup(
+            "Unable to Load Tasks",
+            "Could not load tasks. Check that Spring Boot is running and try again.",
+            "error"
+        );
+    }
+}
+
+/* RENDER TASK TABLE */
+
+function renderTasks() {
+    const query = searchInput.value.trim().toLowerCase();
+
+    const filteredTasks = assignedTasks.filter(report => {
+        const searchable = [
+            report.id,
+            report.location,
+            report.description,
+            report.status,
+            report.taskStatus
+        ].join(" ").toLowerCase();
+
+        return searchable.includes(query);
+    });
+
+    taskTableBody.replaceChildren();
+
+    if (filteredTasks.length === 0) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+
+        cell.colSpan = 6;
+        cell.className = "table-message";
+
+        cell.textContent = assignedTasks.length === 0
+            ? "No tasks assigned to " + CURRENT_WORKER + " yet."
+            : "No tasks match your search.";
+
+        row.appendChild(cell);
+        taskTableBody.appendChild(row);
+        return;
+    }
+
+    filteredTasks.forEach(report => {
+        const row = document.createElement("tr");
+        const status = getTaskStatus(report);
+
+        const idCell = document.createElement("td");
+        idCell.className = "id-cell";
+        idCell.textContent = report.id ?? "—";
+        row.appendChild(idCell);
+
+        const locationCell = document.createElement("td");
+        locationCell.textContent = report.location || "—";
+        row.appendChild(locationCell);
+
+        const descriptionCell = document.createElement("td");
+        descriptionCell.textContent = report.description || "—";
+        row.appendChild(descriptionCell);
+
+        const statusCell = document.createElement("td");
+        const badge = document.createElement("span");
+
+        badge.className = "status-badge";
+
+        if (status === "Completed") {
+            badge.classList.add("completed");
+        } else if (status === "In Progress") {
+            badge.classList.add("in-progress");
+        } else {
+            badge.classList.add("pending");
+        }
+
+        badge.textContent = status;
+        statusCell.appendChild(badge);
+        row.appendChild(statusCell);
+
+        // Report.java has no assigned-date field.
+        const dateCell = document.createElement("td");
+        dateCell.textContent = "—";
+        row.appendChild(dateCell);
+
+        const actionCell = document.createElement("td");
+
+        if (status === "Completed") {
+            const viewButton = document.createElement("button");
+
+            viewButton.type = "button";
+            viewButton.className = "action-btn view-btn";
+            viewButton.textContent = "View";
+
+            viewButton.addEventListener("click", () => {
+                showPopup(
+                    "Completed Task Details",
+                    "Report ID: " + report.id +
+                    "\nLocation: " + (report.location || "—") +
+                    "\nDescription: " + (report.description || "—") +
+                    "\nWaste Status: " + (report.status || "—") +
+                    "\nTask Status: Completed",
+                    "success"
+                );
+            });
+
+            actionCell.appendChild(viewButton);
+
+        } else {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "action-btn";
+
+            if (status === "Pending") {
+                button.textContent = "Start Task";
+
+                button.addEventListener("click", () => {
+                    updateTaskStatus(report.id, "start", button);
+                });
+
+            } else {
+                button.textContent = "Mark Complete";
+                button.classList.add("complete-btn");
+
+                button.addEventListener("click", () => {
+                    updateTaskStatus(report.id, "complete", button);
+                });
+            }
+
+            actionCell.appendChild(button);
+        }
+
+        row.appendChild(actionCell);
+        taskTableBody.appendChild(row);
+    });
+}
+
+/* START OR COMPLETE A TASK */
+
+async function updateTaskStatus(reportId, action, button) {
+    const originalText = button.textContent;
+
+    button.disabled = true;
+    button.textContent = "Updating...";
+
+    try {
+        const endpoint = action === "start"
+            ? `/api/reports/${encodeURIComponent(reportId)}/start`
+            : `/api/reports/${encodeURIComponent(reportId)}/complete`;
+
+        const response = await fetch(endpoint, {
+            method: "PUT"
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                "Task update failed with HTTP " + response.status
+            );
+        }
+
+        const updatedReport = await response.json();
+
+        const index = assignedTasks.findIndex(report =>
+            String(report.id) === String(reportId)
+        );
+
+        if (index !== -1) {
+            assignedTasks[index] = updatedReport;
+        }
+
+        updateStatistics();
+        renderTasks();
+
+        showPopup(
+            action === "start" ? "Task Started!" : "Task Completed!",
+            action === "start"
+                ? "The task has been moved to In Progress."
+                : "The task has been marked as completed successfully.",
+            "success"
+        );
+
+    } catch (error) {
+        console.error("Task update error:", error);
+
+        showPopup(
+            "Task Update Failed",
+            action === "start"
+                ? "Could not start the task. Please check the backend endpoint and try again."
+                : "Could not complete the task. Please check the backend endpoint and try again.",
+            "error"
+        );
+
+        button.disabled = false;
+        button.textContent = originalText;
+    }
+}
+
+/* SEARCH */
+
+searchInput.addEventListener("input", renderTasks);
+
+/* INITIALIZE */
+
+loadTasks();
+</script>
+
+</body>
+</html>

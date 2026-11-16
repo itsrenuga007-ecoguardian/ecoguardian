@@ -1,0 +1,460 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Eco Guardian</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #e8f5e9, #f5faf5);
+            color: #243b2b;
+        }
+
+        /* Navigation bar */
+        .navbar {
+            background: #174c32;
+            color: white;
+            padding: 16px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+        }
+
+        .back-home {
+            text-decoration: none;
+            color: white;
+            border: 1px solid #a5d6a7;
+            padding: 9px 17px;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        .back-home:hover {
+            background: #2e7d50;
+        }
+
+        /* Login section */
+        .page-container {
+            min-height: calc(100vh - 140px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            background: white;
+            padding: 38px;
+            border-radius: 20px;
+            box-shadow: 0 12px 35px rgba(23, 76, 50, 0.13);
+        }
+
+        .icon-circle {
+            width: 75px;
+            height: 75px;
+            margin: 0 auto 18px;
+            background: #e3f4e7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+        }
+
+        .login-card h1 {
+            text-align: center;
+            font-size: 29px;
+            color: #174c32;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #718075;
+            font-size: 14px;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 19px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #304b38;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d7e2d9;
+            border-radius: 9px;
+            outline: none;
+            background: #fcfefc;
+            color: #243b2b;
+            font-size: 15px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #27834f;
+            box-shadow: 0 0 0 3px rgba(39, 131, 79, 0.10);
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .password-wrapper input {
+            padding-right: 65px;
+        }
+
+        .show-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            color: #287a49;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin: 2px 0 23px;
+            font-size: 13px;
+        }
+
+        .remember {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #536358;
+        }
+
+        .remember input {
+            accent-color: #237a48;
+        }
+
+        .forgot-link {
+            color: #237a48;
+            text-decoration: none;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #237a48;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .login-button:hover {
+            background: #174c32;
+            transform: translateY(-1px);
+        }
+
+        .register-text {
+            text-align: center;
+            margin-top: 23px;
+            font-size: 14px;
+            color: #68766b;
+        }
+
+        .register-text a {
+            color: #237a48;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .register-text a:hover {
+            text-decoration: underline;
+        }
+
+        .security-note {
+            text-align: center;
+            font-size: 12px;
+            color: #879389;
+            margin-top: 22px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 18px;
+            color: #617466;
+            font-size: 13px;
+        }
+
+        @media (max-width: 480px) {
+            .navbar {
+                padding: 15px 5%;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .login-card {
+                padding: 27px 21px;
+            }
+
+            .login-card h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="logo">🌿 Eco Guardian</a>
+        <a href="index.html" class="back-home">← Back to Home</a>
+    </nav>
+
+    <main class="page-container">
+        <section class="login-card">
+
+            <div class="icon-circle">🌱</div>
+
+            <h1>Welcome Back!</h1>
+            <p class="subtitle">
+                Sign in to your Eco Guardian account
+                and help keep our environment clean.
+            </p>
+
+            <form id="loginForm">
+
+                <div class="form-group">
+                    <label for="role">Login As</label>
+                    <select id="role" name="role" required>
+                        <option value="">Select your role</option>
+                        <option value="USER">User / Citizen</option>
+                        <option value="WORKER">Worker</option>
+                        <option value="ADMIN">Admin</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="username">Email or Username</label>
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Enter your email or username"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+
+                    <div class="password-wrapper">
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="show-password"
+                            id="togglePassword"
+                        >Show</button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember">
+                        <input type="checkbox" id="rememberMe">
+                        Remember me
+                    </label>
+
+                    <a href="#" class="forgot-link" id="forgotPassword">
+                        Forgot password?
+                    </a>
+                </div>
+
+                <button type="submit" class="login-button">
+                    Login to Eco Guardian
+                </button>
+
+            </form>
+
+            <p class="register-text">
+                New citizen?
+                <a href="register.html">Create an account</a>
+            </p>
+
+            <p class="security-note">
+                🌍 Together for a cleaner and greener tomorrow
+            </p>
+
+        </section>
+    </main>
+
+    <footer>
+        © 2026 Eco Guardian | Smart Environmental Monitoring System
+    </footer>
+
+    
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("loginForm");
+    const username = document.getElementById("username");
+    const password = document.getElementById("password");
+    const role = document.getElementById("role");
+    const button = form.querySelector('button[type="submit"]');
+
+    // Create a message area without changing the page design.
+    let message = document.getElementById("message");
+
+    if (!message) {
+        message = document.createElement("p");
+        message.id = "message";
+        message.setAttribute("aria-live", "polite");
+        message.style.marginTop = "14px";
+        message.style.textAlign = "center";
+        message.style.fontSize = "14px";
+        button.insertAdjacentElement("afterend", message);
+    }
+
+    // Show / hide password.
+    document.getElementById("togglePassword").addEventListener("click", function () {
+        const hidden = password.type === "password";
+        password.type = hidden ? "text" : "password";
+        this.textContent = hidden ? "Hide" : "Show";
+    });
+
+    // Handle login form.
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        message.style.color = "#b42318";
+        message.textContent = "";
+
+        if (!username.value.trim() || !password.value || !role.value) {
+            message.textContent = "Please enter your email, password and role.";
+            return;
+        }
+
+        button.disabled = true;
+        button.textContent = "Signing in...";
+
+        try {
+            const response = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "same-origin",
+                body: JSON.stringify({
+                    email: username.value.trim(),
+                    password: password.value
+                })
+            });
+
+            const result = await response.json();
+
+            if (!response.ok) {
+                message.textContent =
+                    result.message || "Invalid email or password.";
+                return;
+            }
+
+            // Verify the selected role matches the authenticated account.
+            if (result.role !== role.value) {
+                await fetch("/api/auth/logout", {
+                    method: "POST",
+                    credentials: "same-origin"
+                });
+
+                message.textContent =
+                    "The selected role does not match this account. Please select the correct role.";
+                return;
+            }
+
+            message.style.color = "#087443";
+            message.textContent = "Login successful! Welcome, " + result.name + ".";
+
+            if (result.role === "USER") {
+                window.location.href = "/index.html";
+            } else if (result.role === "ADMIN") {
+                window.location.href = "/admin.html";
+            } else if (result.role === "WORKER") {
+                window.location.href = "/worker.html";
+            } else {
+                message.textContent = "Unknown account role.";
+            }
+
+        } catch (error) {
+            console.error("Login error:", error);
+            message.textContent =
+                "Unable to contact the server. Check that Eco Guardian is running.";
+        } finally {
+            button.disabled = false;
+            button.textContent = "Login to Eco Guardian";
+        }
+    });
+
+    // Forgot-password link: show a message until password recovery is implemented.
+    document.getElementById("forgotPassword").addEventListener("click", function (event) {
+        event.preventDefault();
+        message.style.color = "#b42318";
+        message.textContent =
+            "Password recovery is not set up yet. Please contact the administrator.";
+    });
+});
+</script>
+
+
+
+
+</body>
+</html>
